@@ -1,0 +1,63 @@
+#    __          .__
+#    _______/  |_ ___.__.|  |_______
+#    \____ \   __<   |  ||  |\_  __ \
+#    |  |_> >  |  \___  ||  |_|  | \/
+#    |   __/|__|  / ____||____/__|
+#    |__|         \/
+#
+#    https://ptylr.com
+#    https://www.linkedin.com/in/ptylr/
+
+services:
+  drupal:
+    image: drupal:11-apache
+    container_name: drupal-app
+    ports:
+      - "80:80"
+    environment:
+      DRUPAL_DB_HOST: $DRUPAL_DB_HOST
+      DRUPAL_DB_NAME: $DRUPAL_DB_NAME
+      DRUPAL_DB_USER: $DRUPAL_DB_USER
+      DRUPAL_DB_PASSWORD: $DRUPAL_DB_PASSWORD
+    volumes:
+      - drupal_data:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - drupalnet
+
+  db:
+    image: mariadb:10.6
+    container_name: drupal-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - drupalnet
+
+  ngrok:
+    container_name: drupal-ngrok
+    image: ngrok/ngrok:latest
+    platform: linux/amd64
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    command: start --all --config /etc/ngrok.yml
+    networks:
+      - drupalnet
+    depends_on:
+      - drupal
+    restart: unless-stopped
+
+volumes:
+  drupal_data:
+  db_data:
+
+networks:
+  drupalnet:
+    driver: bridge
+

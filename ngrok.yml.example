@@ -1,0 +1,18 @@
+#!/bin/bash
+#    __          .__
+#    _______/  |_ ___.__.|  |_______
+#    \____ \   __<   |  ||  |\_  __ \
+#    |  |_> >  |  \___  ||  |_|  | \/
+#    |   __/|__|  / ____||____/__|
+#    |__|         \/
+#
+#    https://ptylr.com
+#    https://www.linkedin.com/in/ptylr/
+
+version: 2
+authtoken: your-ngrok-authtoken-here
+tunnels:
+  drupal:
+    addr: drupal:80
+    proto: http
+    domain: your-subdomain.ngrok-free.app
